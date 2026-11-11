@@ -1,0 +1,44 @@
+@if (companies().length > 0) {
+  <div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Website</th>
+        <th scope="col">Domain</th>
+        @if (searchText()) {
+          <th scope="col">Match</th>
+        }
+        <th scope="col"><span class="visually-hidden">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (company of companies(); track company.id) {
+        <tr>
+          <td>{{ company.name }}</td>
+          <td><a [href]="company.websiteUrl" target="_blank" rel="noopener noreferrer">{{ company.websiteUrl }}</a></td>
+          <td>{{ company.domain }}</td>
+          @if (searchText()) {
+            <td>{{ company.relevanceScore === undefined ? '' : (company.relevanceScore * 100).toFixed(0) + '%' }}</td>
+          }
+          <td class="actions">
+            <button type="button" (click)="edit.emit(company)" [attr.aria-label]="'Edit ' + company.name">Edit</button>
+            <button type="button" (click)="remove.emit(company)" [attr.aria-label]="'Delete ' + company.name">
+              Delete
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  </div>
+  @if (totalCount() > companies().length) {
+    <p class="hint">Showing the first {{ companies().length }} of {{ totalCount() }} companies.</p>
+  }
+} @else if (loading()) {
+  <p class="hint">Loading companies…</p>
+} @else if (searchText()) {
+  <p class="hint">No companies match “{{ searchText() }}”.</p>
+} @else {
+  <p class="hint">No companies yet. Add the first one with the form above.</p>
+}

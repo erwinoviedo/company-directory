@@ -1,0 +1,30 @@
+<main>
+  <h1>Company directory</h1>
+
+  @if (notice(); as current) {
+    <p class="notice" [class.success]="current.kind === 'success'" [class.error]="current.kind === 'error'" role="status">
+      {{ current.text }}
+    </p>
+  }
+
+  <section>
+    <app-company-form [company]="editing()" (saved)="onSaved($event)" (cancelled)="editing.set(null)" />
+  </section>
+
+  <section>
+    <h2>Companies</h2>
+    <div class="field">
+      <label for="search">Search by name or domain</label>
+      <input id="search" type="search" placeholder="acme or acme.com" (input)="onSearch($event)" />
+    </div>
+
+    <app-company-list
+      [companies]="companies()"
+      [totalCount]="totalCount()"
+      [loading]="loading()"
+      [searchText]="searchText()"
+      (edit)="startEdit($event)"
+      (remove)="remove($event)"
+    />
+  </section>
+</main>
