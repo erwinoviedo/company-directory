@@ -1,0 +1,47 @@
+@api = http://localhost:5000/api/companies
+
+### Create a company (201 + Location header)
+# @name created
+POST {{api}}
+Content-Type: application/json
+
+{ "name": "Acme Tools Ltd", "websiteUrl": "https://www.acme-tools.co.uk" }
+
+### Rejected: name does not match the website (400)
+POST {{api}}
+Content-Type: application/json
+
+{ "name": "Globex", "websiteUrl": "https://www.acme-tools.co.uk" }
+
+### Rejected: malformed input (400)
+POST {{api}}
+Content-Type: application/json
+
+{ "name": "A", "websiteUrl": "not-a-url" }
+
+### List all companies
+GET {{api}}
+
+### Get one by id
+GET {{api}}/{{created.response.body.id}}
+
+### Filter by partial name
+GET {{api}}?name=acme
+
+### Filter by website domain
+GET {{api}}?domain=acme-tools.co.uk
+
+### Ranked free-text search, with paging
+GET {{api}}?q=acme&page=1&pageSize=10
+
+### Update
+PUT {{api}}/{{created.response.body.id}}
+Content-Type: application/json
+
+{ "name": "Acme Tools", "websiteUrl": "https://www.acme-tools.co.uk" }
+
+### Delete (204)
+DELETE {{api}}/{{created.response.body.id}}
+
+### Unknown id (404)
+GET {{api}}/00000000-0000-0000-0000-000000000001
